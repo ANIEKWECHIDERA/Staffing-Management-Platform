@@ -271,6 +271,269 @@ For that reason:
 
 - generated `dist` output should be removed after verification steps
 
+## Supabase MCP and Agent Tooling
+
+### Task: Add Supabase MCP server
+
+Status:
+
+- completed
+
+Command used:
+
+- `codex mcp add supabase --url https://mcp.supabase.com/mcp?project_ref=utvjqdmvjxxeqdaotijw`
+
+Result:
+
+- Supabase MCP server added successfully
+
+### Task: Authenticate Supabase MCP
+
+Status:
+
+- completed
+
+Command used:
+
+- `codex mcp login supabase`
+
+Result:
+
+- OAuth login completed successfully
+
+Verification used:
+
+- `codex mcp list`
+
+Result:
+
+- Supabase MCP appears in configured servers and shows OAuth auth status
+
+### Task: Install Supabase agent skills
+
+Status:
+
+- completed
+
+Command used:
+
+- `npx skills add supabase/agent-skills`
+
+Result:
+
+- installed `supabase`
+- installed `supabase-postgres-best-practices`
+
+## Migration and Seed Work
+
+### Task: Create initial migration artifact
+
+Status:
+
+- completed
+
+File:
+
+- `Server/prisma/migrations/0001_init/migration.sql`
+
+Reasoning:
+
+- create a shareable initial SQL migration artifact from the Prisma schema
+- make the backend easier to bootstrap on a real Supabase database
+- keep schema state visible in version control
+
+Implementation note:
+
+- Prisma 7 CLI uses `--to-schema` instead of the removed `--to-schema-datamodel`
+
+### Task: Add seed workflow
+
+Status:
+
+- completed
+
+Files:
+
+- `Server/prisma/seed.ts`
+- `Server/README.md`
+
+What it does:
+
+- seeds or upserts app-side owner and optional staff records
+- expects real Supabase Auth user IDs to be provided in environment variables
+
+Reasoning:
+
+- the backend uses Supabase Auth identities, so local app users must map to real Supabase users
+- a lightweight seed flow is useful before building broader demo data
+
+### Additional backend setup improvements
+
+Files updated:
+
+- `Server/package.json`
+- `Server/.env`
+- `Server/.env.example`
+
+Changes:
+
+- added `prisma:validate`
+- added `prisma:seed`
+- added seed-related environment variables
+- added backend bootstrap instructions
+
+## Credentials Population
+
+### Task: Populate available environment credentials
+
+Status:
+
+- partially completed
+
+What was populated automatically or from user-provided values:
+
+- Supabase project URL added to `Server/.env`
+- Supabase legacy anon key added to `Server/.env`
+- Cloudinary cloud name added to `Server/.env`
+- Cloudinary API key added to `Server/.env`
+- Cloudinary API secret added to `Server/.env`
+
+Reasoning:
+
+- Supabase MCP can expose safe public project credentials like the project URL and publishable or anon keys
+- sensitive backend secrets like the service role key and database connection strings still need to come from the Supabase dashboard or a secure secrets source
+
+Still required manually:
+
+- real owner and staff seed user IDs and emails
+
+### Task: Finalize Supabase environment credentials
+
+Status:
+
+- completed
+
+What was added:
+
+- real `DATABASE_URL`
+- real `DIRECT_URL`
+- real `SUPABASE_SERVICE_ROLE_KEY`
+
+Reasoning:
+
+- runtime traffic for the Express backend should use the session pooler connection
+- migration traffic should prefer the direct connection when reachable
+- this split matches the product architecture better than using transaction pooling for a persistent backend
+
+Implementation detail:
+
+- `Server/prisma.config.ts` now prefers `DIRECT_URL` for Prisma migration operations
+- runtime Prisma usage still uses `DATABASE_URL`
+
+### Task: Add defensive RLS enablement migration
+
+Status:
+
+- completed locally
+
+File:
+
+- `Server/prisma/migrations/0002_enable_rls/migration.sql`
+
+Reasoning:
+
+- SkillBridge OS stores sensitive staffing and identity data in the `public` schema
+- since Supabase projects expose `public` by default, enabling RLS on these tables is a safe default even before detailed policies are added
+
+### Task: Attempt to retrieve seed values from Supabase Auth
+
+Status:
+
+- checked
+
+Result:
+
+- `auth.users` currently returned no rows
+
+Meaning:
+
+- there are no current Supabase Auth users available to use as owner or staff seed records
+- real seed values cannot be populated until those auth users exist
+
+## Supabase Database Provisioning
+
+### Task: Apply Phase 1 schema to Supabase project
+
+Status:
+
+- completed
+
+Method used:
+
+- Supabase MCP migration application
+
+Applied migrations:
+
+- initial Phase 1 schema
+- RLS enablement migration
+
+Result:
+
+- all core Phase 1 tables now exist in the Supabase `public` schema
+
+Tables confirmed:
+
+- `public.User`
+- `public.Worker`
+- `public.WorkerRole`
+- `public.WorkerDocument`
+- `public.WorkerReference`
+- `public.Guarantor`
+- `public.Employer`
+- `public.JobRequest`
+- `public.Match`
+- `public.Placement`
+- `public.AuditLog`
+
+Verification:
+
+- table listing confirmed all tables exist
+- RLS confirmed enabled on all created tables
+
+### Security advisory check
+
+Status:
+
+- reviewed
+
+Result:
+
+- Supabase security advisor reported `RLS Enabled No Policy` informational findings on the new tables
+
+Interpretation:
+
+- this is expected for now
+- the tables are backend-oriented and RLS is enabled as a defensive baseline
+- detailed policies can be added later when the final client access model is defined
+
+### Connection strategy decision
+
+Status:
+
+- decided and applied in configuration
+
+Decision:
+
+- use session-mode pooler for `DATABASE_URL`
+- use direct connection for `DIRECT_URL`
+
+Why:
+
+- the Express backend is a persistent server, not a serverless function, so session-mode is a better fit than transaction-mode
+- transaction mode is better for short-lived, high-churn connections and has prepared statement limitations
+- Prisma migration operations should prefer the direct connection where possible
+- if direct connectivity fails because of IPv6/network limitations, `DIRECT_URL` can fall back to the session pooler connection
+
 ## Current Project State
 
 The project currently has:
