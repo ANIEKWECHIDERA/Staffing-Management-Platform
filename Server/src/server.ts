@@ -1,0 +1,18 @@
+import { app } from "./app.js";
+import { env } from "./config/env.js";
+import { prisma } from "./lib/prisma.js";
+
+const start = async () => {
+  try {
+    await prisma.$connect();
+
+    app.listen(env.PORT, () => {
+      console.log(`SkillBridge OS server running on port ${env.PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server", error);
+    process.exit(1);
+  }
+};
+
+void start();

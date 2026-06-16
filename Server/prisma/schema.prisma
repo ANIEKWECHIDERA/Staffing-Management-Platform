@@ -1,0 +1,275 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  owner
+  staff
+}
+
+enum WorkerAvailabilityStatus {
+  available
+  placed
+  unavailable
+}
+
+enum WorkerVerificationStatus {
+  draft
+  pending_verification
+  verified
+  rejected
+  incomplete
+}
+
+enum EmployerType {
+  household
+  business
+  organization
+}
+
+enum WorkArrangement {
+  live_in
+  live_out
+}
+
+enum EmploymentType {
+  full_time
+  part_time
+}
+
+enum JobRequestStatus {
+  new
+  matching
+  interviewing
+  placed
+  closed
+  cancelled
+}
+
+enum PlacementStatus {
+  active
+  ended
+  under_replacement
+}
+
+enum DocumentStatus {
+  uploaded
+  approved
+  rejected
+  missing
+}
+
+enum WorkerDocumentType {
+  profile_photo
+  nin_slip
+  bvn_proof
+  government_id
+  guarantor_id
+  reference_letter
+  medical_report
+  character_reference
+  other
+}
+
+enum WorkerRoleType {
+  nanny
+  driver
+  caregiver
+  housekeeper
+  cleaner
+  private_cook
+  office_support
+}
+
+enum ExperienceLevel {
+  beginner
+  intermediate
+  experienced
+  expert
+}
+
+model User {
+  id                String       @id @default(cuid())
+  supabaseUserId    String       @unique
+  fullName          String
+  email             String       @unique
+  role              UserRole     @default(staff)
+  isActive          Boolean      @default(true)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  auditLogs         AuditLog[]
+  createdWorkers    Worker[]     @relation("WorkerCreatedBy")
+  reviewedDocuments WorkerDocument[] @relation("DocumentReviewedBy")
+  createdRequests   JobRequest[] @relation("JobRequestCreatedBy")
+  createdPlacements Placement[]  @relation("PlacementCreatedBy")
+}
+
+model Worker {
+  id                 String                     @id @default(cuid())
+  fullName           String
+  phone              String
+  email              String?
+  location           String
+  address            String?
+  dateOfBirth        DateTime?
+  gender             String?
+  profilePhotoUrl    String?
+  experienceYears    Int?
+  availabilityStatus WorkerAvailabilityStatus  @default(available)
+  verificationStatus WorkerVerificationStatus  @default(draft)
+  nin                String?
+  bvn                String?
+  notes              String?
+  createdByUserId    String
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+  createdBy          User                       @relation("WorkerCreatedBy", fields: [createdByUserId], references: [id])
+  roles              WorkerRole[]
+  documents          WorkerDocument[]
+  references         WorkerReference[]
+  guarantors         Guarantor[]
+  matches            Match[]
+  placements         Placement[]
+
+  @@index([phone])
+  @@index([nin])
+  @@index([bvn])
+  @@index([availabilityStatus])
+  @@index([verificationStatus])
+}
+
+model WorkerRole {
+  id              String          @id @default(cuid())
+  workerId        String
+  roleType        WorkerRoleType
+  experienceLevel ExperienceLevel?
+  yearsExperience Int?
+  worker          Worker          @relation(fields: [workerId], references: [id], onDelete: Cascade)
+}
+
+model WorkerDocument {
+  id                 String             @id @default(cuid())
+  workerId           String
+  documentType       WorkerDocumentType
+  fileUrl            String
+  cloudinaryPublicId String?
+  status             DocumentStatus     @default(uploaded)
+  reviewNotes        String?
+  uploadedAt         DateTime           @default(now())
+  reviewedAt         DateTime?
+  reviewedByUserId   String?
+  worker             Worker             @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  reviewedBy         User?              @relation("DocumentReviewedBy", fields: [reviewedByUserId], references: [id])
+}
+
+model WorkerReference {
+  id           String  @id @default(cuid())
+  workerId     String
+  fullName     String
+  phone        String
+  relationship String
+  notes        String?
+  worker       Worker  @relation(fields: [workerId], references: [id], onDelete: Cascade)
+}
+
+model Guarantor {
+  id            String  @id @default(cuid())
+  workerId      String
+  fullName      String
+  phone         String
+  address       String
+  relationship  String
+  idDocumentUrl String?
+  notes         String?
+  worker        Worker  @relation(fields: [workerId], references: [id], onDelete: Cascade)
+}
+
+model Employer {
+  id                 String       @id @default(cuid())
+  name               String
+  type               EmployerType
+  primaryContactName String?
+  phone              String
+  email              String?
+  location           String?
+  address            String?
+  notes              String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  jobRequests        JobRequest[]
+  placements         Placement[]
+
+  @@index([name])
+}
+
+model JobRequest {
+  id              String          @id @default(cuid())
+  employerId      String
+  roleType        WorkerRoleType
+  location        String
+  workArrangement WorkArrangement
+  employmentType  EmploymentType
+  salaryMin       Int?
+  salaryMax       Int?
+  startDate       DateTime?
+  status          JobRequestStatus @default(new)
+  requirements    String?
+  notes           String?
+  createdByUserId String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  employer        Employer         @relation(fields: [employerId], references: [id], onDelete: Restrict)
+  createdBy       User             @relation("JobRequestCreatedBy", fields: [createdByUserId], references: [id])
+  matches         Match[]
+  placement       Placement?
+
+  @@index([status])
+}
+
+model Match {
+  id               String     @id @default(cuid())
+  jobRequestId     String
+  workerId         String
+  score            Int
+  matchReasonsJson Json
+  createdAt        DateTime   @default(now())
+  jobRequest       JobRequest @relation(fields: [jobRequestId], references: [id], onDelete: Cascade)
+  worker           Worker     @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@index([jobRequestId])
+}
+
+model Placement {
+  id              String          @id @default(cuid())
+  jobRequestId    String          @unique
+  workerId        String
+  employerId      String
+  placementDate   DateTime
+  guaranteeEndDate DateTime?
+  status          PlacementStatus @default(active)
+  notes           String?
+  createdByUserId String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  jobRequest      JobRequest      @relation(fields: [jobRequestId], references: [id], onDelete: Restrict)
+  worker          Worker          @relation(fields: [workerId], references: [id], onDelete: Restrict)
+  employer        Employer        @relation(fields: [employerId], references: [id], onDelete: Restrict)
+  createdBy       User            @relation("PlacementCreatedBy", fields: [createdByUserId], references: [id])
+
+  @@index([status])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  entityType String
+  entityId   String
+  action     String
+  changesJson Json?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
