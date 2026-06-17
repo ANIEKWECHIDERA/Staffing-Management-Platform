@@ -8,6 +8,7 @@ import { healthRouter } from "./health.routes.js";
 import { jobRequestsRouter } from "./job-requests.routes.js";
 import { matchesRouter } from "./matches.routes.js";
 import { placementsRouter } from "./placements.routes.js";
+import { uploadsRouter } from "./uploads.routes.js";
 import { usersRouter } from "./users.routes.js";
 import { workersRouter } from "./workers.routes.js";
 
@@ -24,3 +25,4 @@ apiRouter.use("/job-requests", jobRequestsRouter);
 apiRouter.use("/job-requests/:id/matches", matchesRouter);
 apiRouter.use("/placements", placementsRouter);
 apiRouter.use("/dashboard", dashboardRouter);
+apiRouter.use("/uploads", uploadsRouter);

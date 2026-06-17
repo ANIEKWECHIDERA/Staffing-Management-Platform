@@ -534,6 +534,150 @@ Why:
 - Prisma migration operations should prefer the direct connection where possible
 - if direct connectivity fails because of IPv6/network limitations, `DIRECT_URL` can fall back to the session pooler connection
 
+## Upload Engine
+
+### Task: Add Cloudinary upload endpoints
+
+Status:
+
+- completed
+
+Files added:
+
+- `Server/src/validators/upload.validator.ts`
+- `Server/src/utils/uploads.ts`
+- `Server/src/controllers/uploads.controller.ts`
+- `Server/src/routes/uploads.routes.ts`
+
+Files updated:
+
+- `Server/src/routes/index.ts`
+- `Server/README.md`
+
+What was implemented:
+
+- signed upload parameter endpoint
+- upload result verification endpoint
+- asset deletion endpoint
+
+Design reasoning:
+
+- this follows the Lego mindset by treating uploads as a reusable core engine service instead of embedding Cloudinary logic inside worker-specific flows
+- other modules can connect to this layer later, including worker onboarding, verification, employer attachments, and future self-service portals
+- the upload engine now handles:
+  - file-target aware folder naming
+  - deterministic public ID generation
+  - audit logging
+  - backend verification of Cloudinary upload signatures
+
+Current upload targets:
+
+- `worker_profile`
+- `worker_document`
+- `employer_attachment`
+- `generic`
+
+Intended usage pattern:
+
+1. frontend asks the backend for a signed upload payload
+2. frontend uploads directly to Cloudinary
+3. frontend submits the Cloudinary upload result for verification
+4. domain modules attach the verified asset metadata to records like `WorkerDocument`
+
+## PRD Re-Alignment
+
+### Task: Re-center backend work on the PRD Phase 1 core system
+
+Status:
+
+- completed
+
+Reasoning:
+
+- the PRD remains the single source of truth
+- backend work was re-checked against the Phase 1 core modules:
+  - authentication and access control
+  - worker management
+  - employer management
+  - job requests
+  - verification workflow
+  - rule-based matching
+  - placement pipeline
+  - admin dashboard
+
+Outcome:
+
+- endpoint work is now being treated as core engine infrastructure for those PRD modules
+- modularity is preserved so later modules can connect without reworking the Phase 1 base
+
+## Supabase Authentication Setup
+
+### Task: Make user-management endpoints truly Supabase-backed
+
+Status:
+
+- completed
+
+Files updated:
+
+- `Server/src/controllers/users.controller.ts`
+- `Server/src/validators/user.validator.ts`
+- `Server/README.md`
+
+What changed:
+
+- owner user creation now provisions a staff account through Supabase Auth
+- local app `User` records are now mirrored from the created Supabase Auth user
+- user deactivation now also bans the corresponding Supabase Auth user in addition to disabling the local app record
+
+Design reasoning:
+
+- Supabase should remain the identity provider
+- SkillBridge OS should remain the operational authorization layer
+- this keeps identity and workflow concerns separate while still matching the PRD’s delegation model
+
+## Endpoint Test Coverage
+
+### Task: Test the backend endpoint surface
+
+Status:
+
+- completed
+
+Files added:
+
+- `Server/tests/api.test.ts`
+- `Server/vitest.config.ts`
+
+Files updated:
+
+- `Server/package.json`
+
+What was tested:
+
+- health
+- auth sync and current-user lookup
+- user management
+- worker CRUD and verification actions
+- employer CRUD
+- job request CRUD and status updates
+- matching endpoints
+- placement endpoints
+- dashboard summary
+- upload engine endpoints
+
+Verification results:
+
+- `npm run prisma:validate` passed
+- `npm run build` passed
+- `npm test` passed
+
+Important testing note:
+
+- current API tests are route-level tests with mocked infrastructure dependencies
+- they verify endpoint shape and backend behavior orchestration
+- they are not yet full live integration tests against the real Supabase database or Cloudinary service
+
 ## Current Project State
 
 The project currently has:
