@@ -1,0 +1,739 @@
+<!doctype html>
+<html class="scroll-smooth" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta
+      name="description"
+      content="SkillBridge OS is the trusted entry point for premium domestic staffing, helping employers request vetted workers and helping workers apply into a structured, high-trust platform."
+    />
+    <title>SkillBridge OS | Trusted Domestic Staffing</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Geist", sans-serif;
+        background: #fbf9f4;
+        color: #1b1c19;
+      }
+
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 450,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+
+      .soft-grid {
+        background-image:
+          linear-gradient(rgba(117, 119, 122, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(117, 119, 122, 0.08) 1px, transparent 1px);
+        background-size: 30px 30px;
+      }
+
+      .section-card {
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          border-color 0.25s ease;
+      }
+
+      .section-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 35px -24px rgba(26, 28, 30, 0.35);
+        border-color: #9a4528;
+      }
+
+      .nav-chip {
+        border: 1px solid #c5c6ca;
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(10px);
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: "#fbf9f4",
+              surface: "#ffffff",
+              surfaceSoft: "#f5f3ee",
+              surfaceMuted: "#ece9e1",
+              primary: "#111312",
+              secondary: "#9a4528",
+              secondarySoft: "#ffdbd0",
+              inkSoft: "#5d625f",
+              outline: "#c8c7c1",
+              deep: "#1a1c1e",
+              trust: "#0f3b2f",
+              trustSoft: "#d7ebe1",
+            },
+            boxShadow: {
+              soft: "0 18px 30px -24px rgba(17, 19, 18, 0.4)",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-background text-primary selection:bg-secondarySoft selection:text-primary">
+    <header class="sticky top-0 z-50 border-b border-outline/80 bg-background/90 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+        <a href="#home" class="flex items-center gap-3">
+          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white shadow-soft">
+            <span class="material-symbols-outlined text-[20px]">shield_person</span>
+          </div>
+          <div>
+            <div class="text-base font-semibold tracking-tight sm:text-lg">SkillBridge OS</div>
+            <div class="text-xs uppercase tracking-[0.22em] text-inkSoft">Trusted staffing engine</div>
+          </div>
+        </a>
+
+        <div class="hidden items-center gap-3 lg:flex">
+          <div class="nav-chip flex items-center gap-2 rounded-full px-3 py-2">
+            <a class="rounded-full px-3 py-2 text-sm font-medium hover:bg-surfaceSoft" href="#home">Home</a>
+            <a class="rounded-full px-3 py-2 text-sm font-medium hover:bg-surfaceSoft" href="#about">About</a>
+            <a class="rounded-full px-3 py-2 text-sm font-medium hover:bg-surfaceSoft" href="#services">Services</a>
+          </div>
+          <div class="nav-chip flex items-center gap-2 rounded-full px-3 py-2">
+            <a class="rounded-full px-3 py-2 text-sm font-medium hover:bg-surfaceSoft" href="#for-employers">For Employers</a>
+            <a class="rounded-full px-3 py-2 text-sm font-medium hover:bg-surfaceSoft" href="#for-workers">For Workers</a>
+          </div>
+          <div class="nav-chip flex items-center gap-2 rounded-full px-3 py-2">
+            <a class="rounded-full px-3 py-2 text-sm font-medium hover:bg-surfaceSoft" href="#contact">Contact</a>
+            <a class="rounded-full px-3 py-2 text-sm font-medium hover:bg-surfaceSoft" href="#login">Login</a>
+          </div>
+        </div>
+
+        <div class="hidden items-center gap-3 md:flex">
+          <a
+            href="#apply"
+            class="rounded-full border border-outline bg-surface px-4 py-2.5 text-sm font-semibold transition hover:border-secondary hover:text-secondary"
+          >
+            Apply as Worker
+          </a>
+          <a
+            href="#request"
+            class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-secondary"
+          >
+            Request Staff
+          </a>
+        </div>
+
+        <button
+          id="menu-toggle"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-outline bg-surface lg:hidden"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+
+      <div id="mobile-menu" class="hidden border-t border-outline bg-background lg:hidden">
+        <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6">
+          <div class="rounded-3xl border border-outline bg-surface p-3">
+            <div class="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-inkSoft">Explore</div>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#home">Home</a>
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#about">About</a>
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#services">Services</a>
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#contact">Contact</a>
+            </div>
+          </div>
+          <div class="rounded-3xl border border-outline bg-surface p-3">
+            <div class="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-inkSoft">Paths</div>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#for-employers">For Employers</a>
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#for-workers">For Workers</a>
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#apply">Apply</a>
+              <a class="rounded-2xl px-3 py-2 hover:bg-surfaceSoft" href="#request">Request Staff</a>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <a href="#login" class="rounded-full border border-outline px-4 py-3 text-center text-sm font-semibold">Login</a>
+            <a href="#request" class="rounded-full bg-primary px-4 py-3 text-center text-sm font-semibold text-white">Start a Request</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="home" class="soft-grid relative overflow-hidden">
+        <div class="mx-auto grid max-w-7xl gap-14 px-4 py-16 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-24">
+          <div class="space-y-8">
+            <div class="inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondarySoft px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-secondary">
+              <span class="material-symbols-outlined text-[18px]">verified_user</span>
+              Verified domestic staffing for serious employers
+            </div>
+            <div class="space-y-5">
+              <h1 class="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+                The trusted front door to a faster, more structured staffing operation.
+              </h1>
+              <p class="max-w-2xl text-base leading-7 text-inkSoft sm:text-lg">
+                SkillBridge OS helps households, businesses, and organizations request vetted domestic and support staff with clarity, speed, and confidence. It also gives workers a professional path into a high-trust system.
+              </p>
+            </div>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <a href="#request" class="rounded-full bg-primary px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-secondary">Request Staff</a>
+              <a href="#apply" class="rounded-full border border-outline bg-surface px-6 py-4 text-center text-sm font-semibold transition hover:border-secondary hover:text-secondary">Apply as Worker</a>
+            </div>
+            <div class="grid max-w-2xl gap-4 sm:grid-cols-3">
+              <div class="rounded-3xl border border-outline bg-surface/80 p-5 shadow-soft">
+                <div class="text-2xl font-semibold">2,500+</div>
+                <div class="mt-1 text-sm text-inkSoft">Worker records structured into one system</div>
+              </div>
+              <div class="rounded-3xl border border-outline bg-surface/80 p-5 shadow-soft">
+                <div class="text-2xl font-semibold">98%</div>
+                <div class="mt-1 text-sm text-inkSoft">Shortlist confidence with verified profiles</div>
+              </div>
+              <div class="rounded-3xl border border-outline bg-surface/80 p-5 shadow-soft">
+                <div class="text-2xl font-semibold">24/7</div>
+                <div class="mt-1 text-sm text-inkSoft">Operational visibility for owners and staff</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="absolute -left-8 top-16 h-36 w-36 rounded-full bg-secondarySoft blur-3xl"></div>
+            <div class="absolute bottom-4 right-4 h-40 w-40 rounded-full bg-trustSoft blur-3xl"></div>
+            <div class="relative overflow-hidden rounded-[2rem] border border-outline bg-surface shadow-soft">
+              <img
+                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
+                alt="Professional domestic staffing and operations"
+                class="h-[300px] w-full object-cover sm:h-[380px] lg:h-[520px]"
+              />
+              <div class="grid gap-4 border-t border-outline bg-surface p-5 sm:grid-cols-2">
+                <div class="rounded-3xl bg-surfaceSoft p-4">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-trust text-white">
+                      <span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-semibold">Verification first</div>
+                      <div class="text-xs text-inkSoft">NIN, BVN, references, identity, documents</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-3xl bg-surfaceSoft p-4">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary text-white">
+                      <span class="material-symbols-outlined text-[20px]">bolt</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-semibold">Fast matching</div>
+                      <div class="text-xs text-inkSoft">Structured requests become decisive candidate shortlists</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="border-y border-outline bg-surfaceSoft">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-20">
+          <div class="space-y-4">
+            <div class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">About SkillBridge OS</div>
+            <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Built for a people-driven business that cannot afford operational chaos.</h2>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondarySoft text-secondary">
+                <span class="material-symbols-outlined">hub</span>
+              </div>
+              <h3 class="text-lg font-semibold">One system of record</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">
+                Worker records, employer requests, documents, placements, and operational decisions all move into one controlled workflow.
+              </p>
+            </div>
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-trustSoft text-trust">
+                <span class="material-symbols-outlined">shield</span>
+              </div>
+              <h3 class="text-lg font-semibold">Trust as infrastructure</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">
+                Verification is not a side note. It is at the center of how workers are onboarded, reviewed, matched, and placed.
+              </p>
+            </div>
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-surfaceMuted text-primary">
+                <span class="material-symbols-outlined">pace</span>
+              </div>
+              <h3 class="text-lg font-semibold">Faster staffing decisions</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">
+                Requests become structured records, not forgotten chats. Matching becomes explainable, not memory-driven.
+              </p>
+            </div>
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondarySoft text-secondary">
+                <span class="material-symbols-outlined">monitoring</span>
+              </div>
+              <h3 class="text-lg font-semibold">Clear founder visibility</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">
+                Leadership can see workers, open requests, bottlenecks, placements, and team activity without returning to WhatsApp chaos.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="bg-background">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div class="mb-12 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Services</div>
+              <h2 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Specialized staffing for domestic and operational support roles.</h2>
+            </div>
+            <p class="max-w-2xl text-sm leading-6 text-inkSoft sm:text-base">
+              The platform supports the major categories already defined in the PRD, with room to grow into richer matching rules later.
+            </p>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <article class="section-card rounded-[1.75rem] border border-outline bg-surface p-6">
+              <h3 class="text-xl font-semibold">Nannies and Childcare</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Trusted childcare professionals matched for routine, personality fit, and household expectations.</p>
+            </article>
+            <article class="section-card rounded-[1.75rem] border border-outline bg-surface p-6">
+              <h3 class="text-xl font-semibold">Drivers</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Reliable domestic and executive drivers screened for identity, records, and dependability.</p>
+            </article>
+            <article class="section-card rounded-[1.75rem] border border-outline bg-surface p-6">
+              <h3 class="text-xl font-semibold">Caregivers</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Compassionate support for elderly care, home assistance, and day-to-day wellbeing needs.</p>
+            </article>
+            <article class="section-card rounded-[1.75rem] border border-outline bg-surface p-6">
+              <h3 class="text-xl font-semibold">Housekeepers and Cleaners</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Order-focused staff for household upkeep, cleaning routines, and service consistency.</p>
+            </article>
+            <article class="section-card rounded-[1.75rem] border border-outline bg-surface p-6">
+              <h3 class="text-xl font-semibold">Private Cooks</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Culinary support matched for dietary needs, home service standards, and professionalism.</p>
+            </article>
+            <article class="section-card rounded-[1.75rem] border border-outline bg-surface p-6">
+              <h3 class="text-xl font-semibold">Office Support</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Support staff for administrative and operational tasks where trust and consistency matter.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="for-employers" class="bg-primary text-white">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-20">
+          <div class="space-y-6">
+            <div class="text-xs font-semibold uppercase tracking-[0.24em] text-[#ffb59d]">For Employers</div>
+            <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">A calmer way to hire vetted staff without losing control of the process.</h2>
+            <p class="max-w-2xl text-sm leading-7 text-white/75 sm:text-base">
+              SkillBridge is not a public marketplace. It is a guided service operation backed by a structured internal system. Employers submit clear needs, and the team turns them into properly reviewed matches.
+            </p>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <div class="text-lg font-semibold">Structured requests</div>
+                <p class="mt-2 text-sm leading-6 text-white/70">Capture role, location, arrangement, salary, start date, and special requirements clearly.</p>
+              </div>
+              <div class="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <div class="text-lg font-semibold">Verification-led trust</div>
+                <p class="mt-2 text-sm leading-6 text-white/70">Workers are reviewed through identity, document, reference, and operational verification steps.</p>
+              </div>
+              <div class="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <div class="text-lg font-semibold">Explainable matching</div>
+                <p class="mt-2 text-sm leading-6 text-white/70">Shortlists are shaped by fit, availability, verification status, and business rules.</p>
+              </div>
+              <div class="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <div class="text-lg font-semibold">Placement continuity</div>
+                <p class="mt-2 text-sm leading-6 text-white/70">Placement dates, status, and guarantee periods stay visible inside the operating system.</p>
+              </div>
+            </div>
+          </div>
+          <div class="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur">
+            <div class="mb-5 flex items-center justify-between">
+              <h3 class="text-xl font-semibold">Employer journey</h3>
+              <span class="rounded-full bg-[#ffdbd0] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-secondary">High-trust flow</span>
+            </div>
+            <div class="space-y-4 text-sm text-white/80">
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                <div class="font-semibold text-white">1. Submit request</div>
+                <div class="mt-1">Tell us the role, location, schedule, salary expectations, and special household needs.</div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                <div class="font-semibold text-white">2. Review shortlist</div>
+                <div class="mt-1">The operations team reviews fit, verification status, and availability before presenting matches.</div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                <div class="font-semibold text-white">3. Confirm placement</div>
+                <div class="mt-1">Once a candidate is chosen, the placement is tracked clearly with dates, status, and next steps.</div>
+              </div>
+            </div>
+            <a href="#request" class="mt-6 inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-primary transition hover:bg-[#ffdbd0]">Start your staffing request</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="for-workers" class="bg-surface">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-20">
+          <div class="rounded-[2rem] border border-outline bg-surfaceSoft p-6">
+            <div class="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-secondary">For Workers</div>
+            <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">A professional application path into a serious staffing network.</h2>
+            <p class="mt-4 text-sm leading-7 text-inkSoft sm:text-base">
+              Workers are not dropped into a noisy marketplace. They are onboarded into a structured system where identity, references, availability, and work history matter.
+            </p>
+            <div class="mt-8 space-y-4">
+              <div class="rounded-3xl border border-outline bg-white p-4">
+                <div class="font-semibold">Simple intake</div>
+                <div class="mt-1 text-sm text-inkSoft">Submit your details, role categories, contact information, and supporting records.</div>
+              </div>
+              <div class="rounded-3xl border border-outline bg-white p-4">
+                <div class="font-semibold">Verification and trust</div>
+                <div class="mt-1 text-sm text-inkSoft">NIN, BVN, documents, guarantor, and references help build a trusted worker profile.</div>
+              </div>
+              <div class="rounded-3xl border border-outline bg-white p-4">
+                <div class="font-semibold">Better placement readiness</div>
+                <div class="mt-1 text-sm text-inkSoft">A complete profile improves the chance of being matched quickly and appropriately.</div>
+              </div>
+            </div>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondarySoft text-secondary">
+                <span class="material-symbols-outlined">badge</span>
+              </div>
+              <h3 class="text-lg font-semibold">Required trust fields</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Profiles can include NIN, BVN, government ID, guarantor details, and references.</p>
+            </div>
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-trustSoft text-trust">
+                <span class="material-symbols-outlined">location_on</span>
+              </div>
+              <h3 class="text-lg font-semibold">Location-ready records</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Applications capture where a worker is based and what work arrangement they can support.</p>
+            </div>
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-surfaceMuted text-primary">
+                <span class="material-symbols-outlined">work_history</span>
+              </div>
+              <h3 class="text-lg font-semibold">Role-based matching</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Applications can reflect nanny, driver, caregiver, cook, cleaner, housekeeper, or office support roles.</p>
+            </div>
+            <div class="section-card rounded-[1.75rem] border border-outline bg-white p-6">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondarySoft text-secondary">
+                <span class="material-symbols-outlined">task_alt</span>
+              </div>
+              <h3 class="text-lg font-semibold">Cleaner review workflow</h3>
+              <p class="mt-3 text-sm leading-6 text-inkSoft">Operations staff can clearly see what is complete, what is missing, and what is ready for verification.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="apply" class="border-y border-outline bg-background">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div class="mb-10 max-w-3xl">
+            <div class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Apply as Worker</div>
+            <h2 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Start your worker application with the essentials that build trust.</h2>
+            <p class="mt-4 text-sm leading-7 text-inkSoft sm:text-base">
+              This public form is the intake entrance. The internal SkillBridge system will take the application through verification and matching.
+            </p>
+          </div>
+          <form class="grid gap-5 rounded-[2rem] border border-outline bg-surface p-5 shadow-soft sm:grid-cols-2 sm:p-8">
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Full Name</span>
+              <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="text" placeholder="Enter full name" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Phone Number</span>
+              <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="tel" placeholder="0800 000 0000" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Email Address</span>
+              <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="email" placeholder="you@example.com" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Primary Location</span>
+              <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="text" placeholder="Lagos, Abuja, Port Harcourt..." />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Role Category</span>
+              <select class="w-full rounded-2xl border-outline bg-surfaceSoft">
+                <option>Nanny</option>
+                <option>Driver</option>
+                <option>Caregiver</option>
+                <option>Housekeeper</option>
+                <option>Cleaner</option>
+                <option>Private Cook</option>
+                <option>Office Support</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Work Arrangement</span>
+              <select class="w-full rounded-2xl border-outline bg-surfaceSoft">
+                <option>Live-in</option>
+                <option>Live-out</option>
+                <option>Open to both</option>
+              </select>
+            </label>
+            <label class="block sm:col-span-2">
+              <span class="mb-2 block text-sm font-semibold">Experience Summary</span>
+              <textarea class="min-h-[120px] w-full rounded-3xl border-outline bg-surfaceSoft" placeholder="Tell us about your experience, past work, strengths, and the kind of opportunities you want."></textarea>
+            </label>
+            <div class="rounded-[1.5rem] border border-dashed border-outline bg-surfaceSoft p-4 text-sm text-inkSoft sm:col-span-2">
+              Supporting documents like NIN, BVN proof, references, and IDs can be collected securely in the next step inside the operations workflow.
+            </div>
+            <div class="sm:col-span-2">
+              <button class="rounded-full bg-primary px-6 py-4 text-sm font-semibold text-white transition hover:bg-secondary" type="button">
+                Submit Worker Interest
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="request" class="bg-surface">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div class="mb-10 max-w-3xl">
+            <div class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Request Staff</div>
+            <h2 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Turn a messy staffing need into a clear structured request.</h2>
+            <p class="mt-4 text-sm leading-7 text-inkSoft sm:text-base">
+              This form captures the same core details the internal operations app needs for faster matching and cleaner placement workflows.
+            </p>
+          </div>
+          <form class="grid gap-5 rounded-[2rem] border border-outline bg-background p-5 shadow-soft sm:grid-cols-2 sm:p-8">
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Employer Name</span>
+              <input class="w-full rounded-2xl border-outline bg-surface" type="text" placeholder="Household or business name" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Contact Phone</span>
+              <input class="w-full rounded-2xl border-outline bg-surface" type="tel" placeholder="0800 000 0000" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Email Address</span>
+              <input class="w-full rounded-2xl border-outline bg-surface" type="email" placeholder="contact@example.com" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Needed Role</span>
+              <select class="w-full rounded-2xl border-outline bg-surface">
+                <option>Nanny</option>
+                <option>Driver</option>
+                <option>Caregiver</option>
+                <option>Housekeeper</option>
+                <option>Cleaner</option>
+                <option>Private Cook</option>
+                <option>Office Support</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Location</span>
+              <input class="w-full rounded-2xl border-outline bg-surface" type="text" placeholder="Work location" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Work Arrangement</span>
+              <select class="w-full rounded-2xl border-outline bg-surface">
+                <option>Live-in</option>
+                <option>Live-out</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Employment Type</span>
+              <select class="w-full rounded-2xl border-outline bg-surface">
+                <option>Full-time</option>
+                <option>Part-time</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Target Start Date</span>
+              <input class="w-full rounded-2xl border-outline bg-surface" type="date" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Salary Range</span>
+              <input class="w-full rounded-2xl border-outline bg-surface" type="text" placeholder="e.g. ₦150,000 - ₦250,000" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold">Employer Type</span>
+              <select class="w-full rounded-2xl border-outline bg-surface">
+                <option>Household</option>
+                <option>Business</option>
+                <option>Organization</option>
+              </select>
+            </label>
+            <label class="block sm:col-span-2">
+              <span class="mb-2 block text-sm font-semibold">Requirements and Notes</span>
+              <textarea class="min-h-[130px] w-full rounded-3xl border-outline bg-surface" placeholder="Describe preferred experience, special household conditions, schedule requirements, or any non-negotiables."></textarea>
+            </label>
+            <div class="sm:col-span-2">
+              <button class="rounded-full bg-primary px-6 py-4 text-sm font-semibold text-white transition hover:bg-secondary" type="button">
+                Send Staffing Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="contact" class="bg-background">
+        <div class="mx-auto grid max-w-7xl gap-6 px-4 py-16 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8 lg:py-20">
+          <div class="rounded-[2rem] border border-outline bg-primary p-8 text-white shadow-soft">
+            <div class="text-xs font-semibold uppercase tracking-[0.24em] text-[#ffb59d]">Contact</div>
+            <h2 class="mt-3 text-3xl font-semibold tracking-tight">Talk to the team behind the system.</h2>
+            <p class="mt-4 text-sm leading-7 text-white/75">
+              Reach out for household staffing, business support staffing, partnership conversations, or operational support.
+            </p>
+            <div class="mt-8 space-y-4 text-sm">
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                <div class="font-semibold">Email</div>
+                <div class="mt-1 text-white/75">hello@skillbridgeos.com</div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                <div class="font-semibold">Phone</div>
+                <div class="mt-1 text-white/75">+234 800 000 0000</div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                <div class="font-semibold">Coverage</div>
+                <div class="mt-1 text-white/75">Lagos, Abuja, Port Harcourt, and expanding cities</div>
+              </div>
+            </div>
+          </div>
+          <form class="rounded-[2rem] border border-outline bg-surface p-5 shadow-soft sm:p-8">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="block">
+                <span class="mb-2 block text-sm font-semibold">Your Name</span>
+                <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="text" placeholder="Full name" />
+              </label>
+              <label class="block">
+                <span class="mb-2 block text-sm font-semibold">Email</span>
+                <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="email" placeholder="you@example.com" />
+              </label>
+              <label class="block sm:col-span-2">
+                <span class="mb-2 block text-sm font-semibold">Subject</span>
+                <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="text" placeholder="How can we help?" />
+              </label>
+              <label class="block sm:col-span-2">
+                <span class="mb-2 block text-sm font-semibold">Message</span>
+                <textarea class="min-h-[150px] w-full rounded-3xl border-outline bg-surfaceSoft" placeholder="Tell us what you need."></textarea>
+              </label>
+            </div>
+            <button class="mt-5 rounded-full bg-primary px-6 py-4 text-sm font-semibold text-white transition hover:bg-secondary" type="button">
+              Send Message
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <section id="login" class="border-t border-outline bg-surfaceSoft">
+        <div class="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-20">
+          <div class="space-y-5">
+            <div class="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Login</div>
+            <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Internal access for owners and operations staff.</h2>
+            <p class="max-w-2xl text-sm leading-7 text-inkSoft sm:text-base">
+              This is the authenticated entrance into the SkillBridge operating system where teams manage workers, verification, employers, job requests, matching, placements, and visibility.
+            </p>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="rounded-3xl border border-outline bg-white p-5">
+                <div class="font-semibold">Owner visibility</div>
+                <p class="mt-2 text-sm text-inkSoft">See workers, bottlenecks, active placements, and staff activity from one command center.</p>
+              </div>
+              <div class="rounded-3xl border border-outline bg-white p-5">
+                <div class="font-semibold">Staff execution</div>
+                <p class="mt-2 text-sm text-inkSoft">Capture, verify, match, and place workers without losing information across chats and notebooks.</p>
+              </div>
+            </div>
+          </div>
+          <div class="rounded-[2rem] border border-outline bg-white p-5 shadow-soft sm:p-8">
+            <div class="mb-6">
+              <h3 class="text-2xl font-semibold">Welcome back</h3>
+              <p class="mt-2 text-sm text-inkSoft">Use your staff credentials to enter the internal app.</p>
+            </div>
+            <form class="space-y-5">
+              <label class="block">
+                <span class="mb-2 block text-sm font-semibold">Email Address</span>
+                <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="email" placeholder="staff@skillbridgeos.com" />
+              </label>
+              <label class="block">
+                <span class="mb-2 block text-sm font-semibold">Password</span>
+                <input class="w-full rounded-2xl border-outline bg-surfaceSoft" type="password" placeholder="Enter password" />
+              </label>
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <a href="#login" class="text-sm font-medium text-secondary">Forgot Password?</a>
+                <a href="#request" class="text-sm font-medium text-inkSoft">Need access from the team?</a>
+              </div>
+              <button class="w-full rounded-full bg-primary px-6 py-4 text-sm font-semibold text-white transition hover:bg-secondary" type="button">
+                Log In to SkillBridge OS
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-outline bg-white">
+      <div class="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_1fr_auto] lg:px-8">
+        <div>
+          <div class="text-lg font-semibold">SkillBridge OS</div>
+          <p class="mt-3 max-w-md text-sm leading-6 text-inkSoft">
+            A trusted operations platform for domestic staffing, built to replace scattered founder memory with structure, speed, and operational clarity.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-6 text-sm">
+          <div class="space-y-2">
+            <div class="font-semibold">Website</div>
+            <a class="block text-inkSoft hover:text-secondary" href="#about">About</a>
+            <a class="block text-inkSoft hover:text-secondary" href="#services">Services</a>
+            <a class="block text-inkSoft hover:text-secondary" href="#contact">Contact</a>
+          </div>
+          <div class="space-y-2">
+            <div class="font-semibold">Actions</div>
+            <a class="block text-inkSoft hover:text-secondary" href="#for-employers">For Employers</a>
+            <a class="block text-inkSoft hover:text-secondary" href="#for-workers">For Workers</a>
+            <a class="block text-inkSoft hover:text-secondary" href="#login">Login</a>
+          </div>
+        </div>
+        <div class="text-sm text-inkSoft lg:text-right">
+          <div class="font-semibold text-primary">Entry Experience</div>
+          <div class="mt-2">Designed for mobile-first browsing and fast action on small to medium screens.</div>
+          <div class="mt-6">© 2026 SkillBridge OS</div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const menuToggle = document.getElementById("menu-toggle");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const mobileLinks = mobileMenu.querySelectorAll("a");
+      const header = document.querySelector("header");
+
+      menuToggle.addEventListener("click", () => {
+        const expanded = menuToggle.getAttribute("aria-expanded") === "true";
+        menuToggle.setAttribute("aria-expanded", String(!expanded));
+        mobileMenu.classList.toggle("hidden");
+      });
+
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+          menuToggle.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      window.addEventListener("scroll", () => {
+        header.classList.toggle("shadow-sm", window.scrollY > 16);
+      });
+    </script>
+  </body>
+</html>

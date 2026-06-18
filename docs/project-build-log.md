@@ -1016,3 +1016,128 @@ Important implementation note:
 - frontend login, route guards, and session bootstrap still need to be implemented in the React app
 - frontend password reset and invite acceptance screens still need to be built
 - if Prisma direct-host connectivity remains unstable in this environment, future schema deploys may need the same fallback until DNS/network is corrected
+
+## 2026-06-18 - Public Website Entry Experience
+
+### What Changed
+
+- Rebuilt `client/pubsite.html` into a complete public entry website aligned to the PRD
+- Preserved the warm, premium visual language from the provided snippet
+- Expanded the site into a coherent single-page public experience with anchor-based sections for:
+  - Home
+  - About
+  - Services
+  - For Employers
+  - For Workers
+  - Apply as Worker
+  - Request Staff
+  - Contact
+  - Login
+- Added grouped desktop navigation to reduce header clutter
+- Added a mobile navigation drawer for smaller screens
+- Added public employer request and worker application form sections
+- Added a clearer login entry block that explains the internal app
+
+### Design Direction Followed
+
+The website keeps the same design language introduced in the original snippet:
+
+- warm neutral background
+- dark ink typography
+- grounded terracotta accent
+- rounded card system
+- trust-oriented layout and messaging
+
+The structure was shifted from a partial landing page into a fuller website entrance that matches the PRD requirement that the public website should:
+
+- build trust quickly
+- explain the service clearly
+- convert employers into requests
+- convert workers into applicants
+- guide staff into login
+
+### UX Notes
+
+- the nav is grouped by content type instead of listing every link in one long strip
+- mobile behavior was prioritized so the page remains easy to browse on small to medium screens
+- sections were written to avoid generic job-board messaging and instead reinforce that SkillBridge is a high-trust staffing service backed by operational structure
+
+### Remaining Follow-Up
+
+- connect the public forms to real backend endpoints once the frontend app scaffold is ready
+- split this single-page entry experience into routed React pages if the final frontend architecture prefers page-based navigation over anchored sections
+
+## 2026-06-18 - Client Frontend Rebuilt With React, TypeScript, And shadcn/ui
+
+### What Changed
+
+- Replaced the temporary static public site approach with a real Vite frontend in `client/`
+- Set up:
+  - React
+  - TypeScript
+  - Vite
+  - Tailwind CSS
+  - React Router
+  - shadcn-style component foundation
+- Added `components.json` so the frontend is aligned with shadcn structure going forward
+- Preserved the original visual language direction from the provided snippet, but moved it into reusable React components and routed pages
+
+### Routing Structure Added
+
+Public website routes:
+
+- `/`
+- `/about`
+- `/services`
+- `/for-employers`
+- `/for-workers`
+- `/apply`
+- `/request-staff`
+- `/contact`
+
+Separate internal staff routes:
+
+- `/staff/login`
+- `/staff/signup`
+
+### Important UX Change
+
+- removed the public login button from the website header
+- staff authentication now lives on separate internal routes rather than as a public-site action
+- public header navigation now uses the shadcn `NavigationMenu` pattern with grouped navigation to reduce clutter
+
+### Component Direction
+
+Added reusable UI and layout pieces including:
+
+- `NavigationMenu`
+- `Button`
+- `Card`
+- `Input`
+- `Textarea`
+- `Separator`
+- shared `SiteHeader`
+- shared `SiteFooter`
+- `PublicLayout`
+- reusable `PageHero`
+
+### Why This Matters
+
+This aligns the frontend with the agreed stack and keeps the public website as the entrance to the platform, while clearly separating internal staff access from public visitor flows.
+
+It also creates a better base for the next steps:
+
+- wiring public forms to backend endpoints
+- wiring staff login to Supabase Auth
+- building the internal application shell
+
+### Verification
+
+- `npm run build` passed in `client/`
+- `npm run lint` passed in `client/`
+- `client/dist` was cleared after verification
+
+### Notes
+
+- the original static mock was preserved as `docs/pubsite-legacy-reference.html` for reference
+- the current staff auth pages are frontend placeholders and are not yet connected to Supabase
