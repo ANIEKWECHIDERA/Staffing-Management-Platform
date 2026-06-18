@@ -92,6 +92,12 @@ const mockSupabaseAdmin = {
   },
 };
 
+const mockSupabasePublic = {
+  auth: {
+    resetPasswordForEmail: vi.fn(),
+  },
+};
+
 const mockCloudinary = {
   utils: {
     api_sign_request: vi.fn(),
@@ -110,6 +116,7 @@ vi.mock("../src/lib/prisma.js", () => ({
 
 vi.mock("../src/lib/supabase.js", () => ({
   supabaseAdmin: mockSupabaseAdmin,
+  supabasePublic: mockSupabasePublic,
 }));
 
 vi.mock("../src/config/cloudinary.js", () => ({
@@ -331,6 +338,10 @@ describe("SkillBridge API endpoints", () => {
       data: { user: { id: "staff-sub" } },
       error: null,
     });
+    mockSupabasePublic.auth.resetPasswordForEmail.mockResolvedValue({
+      data: {},
+      error: null,
+    });
 
     mockCloudinary.utils.api_sign_request.mockReturnValue("signed-value");
     mockCloudinary.utils.verify_api_response_signature.mockReturnValue(true);
@@ -339,6 +350,11 @@ describe("SkillBridge API endpoints", () => {
 
   it("covers the full Phase 1 API surface", async () => {
     await request(app).get("/api/v1/health").expect(200);
+
+    await request(app)
+      .post("/api/v1/auth/forgot-password")
+      .send({ email: "owner@example.com" })
+      .expect(200);
 
     await request(app)
       .post("/api/v1/auth/sync-user")
@@ -360,6 +376,8 @@ describe("SkillBridge API endpoints", () => {
         sendInvite: true,
       })
       .expect(201);
+
+    await request(app).post("/api/v1/users/staff-db-id/resend-invite").set(authHeader()).expect(200);
 
     await request(app).patch("/api/v1/users/staff-db-id/deactivate").set(authHeader()).expect(200);
 

@@ -932,3 +932,87 @@ This reduces exposure to:
 - move rate limiting to a shared store such as Redis before high-scale production usage
 - split rate limits further by route sensitivity if needed
 - add deployment-specific CORS origin lists if multiple trusted frontend surfaces are introduced
+
+## 2026-06-18 - Auth Maturity Pass
+
+### What Changed
+
+- Added public forgot-password endpoint:
+  - `POST /api/v1/auth/forgot-password`
+- Added owner-only invite resend endpoint:
+  - `POST /api/v1/users/:id/resend-invite`
+- Updated owner-created invite redirect target to:
+  - `${FRONTEND_URL}/auth/accept-invite`
+- Added explicit RBAC checks across all internal operations routes using `requireRole("owner", "staff")`
+- Added frontend auth integration documentation in `docs/auth-integration-guide.md`
+- Added live RLS policy migration in:
+  - `Server/prisma/migrations/0003_auth_rls_policies/migration.sql`
+
+### Forgot Password Flow
+
+The backend can now initiate password recovery by calling Supabase Auth with the configured frontend reset page:
+
+- redirect target: `${FRONTEND_URL}/auth/reset-password`
+
+Completion of the password reset still belongs to the frontend, which should listen for the Supabase `PASSWORD_RECOVERY` event and then call:
+
+- `supabase.auth.updateUser({ password })`
+
+### Invite Acceptance Flow
+
+Staff invite emails now target a dedicated invite acceptance route rather than the generic login page:
+
+- `${FRONTEND_URL}/auth/accept-invite`
+
+This makes the frontend flow much clearer:
+
+1. receive invite email
+2. land on invite acceptance route
+3. set password if needed
+4. sync app user
+5. enter the internal app
+
+### RBAC Audit Outcome
+
+The backend already had authentication and current-user attachment in place, but some route files did not make role requirements explicit.
+
+That was tightened so the internal operational routes now clearly declare role access in code for:
+
+- workers
+- employers
+- job requests
+- matching
+- placements
+- uploads
+- dashboard
+
+User management remains owner-only.
+
+### RLS Modeling
+
+RLS is no longer just enabled. Policies were added for the `authenticated` role across the internal app tables.
+
+Policy direction:
+
+- authenticated owner/staff users can access internal operations tables
+- `User` writes are owner-scoped
+- `AuditLog` direct writes are owner-scoped
+- `anon` table access is revoked
+
+Important implementation note:
+
+- Supabase MCP was not available during this pass because OAuth re-authentication was required
+- Prisma `migrate deploy` could not use the configured direct host from this environment due DNS resolution issues
+- the SQL migration was therefore applied directly over the reachable pooler connection and then verified by querying `pg_policies`
+
+### Verification
+
+- `npm run build` passed
+- `npm test` passed
+- live database verification confirmed RLS policies now exist in `pg_policies`
+
+### Remaining Auth Gaps
+
+- frontend login, route guards, and session bootstrap still need to be implemented in the React app
+- frontend password reset and invite acceptance screens still need to be built
+- if Prisma direct-host connectivity remains unstable in this environment, future schema deploys may need the same fallback until DNS/network is corrected

@@ -6,10 +6,12 @@ import {
   updatePlacement,
 } from "../controllers/placements.controller.js";
 import { asyncHandler } from "../utils/async-handler.js";
+import { requireRole } from "../middleware/require-role.js";
 
 export const placementsRouter = Router();
+const internalAccess = requireRole("owner", "staff");
 
-placementsRouter.get("/", asyncHandler(listPlacements));
-placementsRouter.post("/", asyncHandler(createPlacement));
-placementsRouter.get("/:id", asyncHandler(getPlacementById));
-placementsRouter.patch("/:id", asyncHandler(updatePlacement));
+placementsRouter.get("/", internalAccess, asyncHandler(listPlacements));
+placementsRouter.post("/", internalAccess, asyncHandler(createPlacement));
+placementsRouter.get("/:id", internalAccess, asyncHandler(getPlacementById));
+placementsRouter.patch("/:id", internalAccess, asyncHandler(updatePlacement));

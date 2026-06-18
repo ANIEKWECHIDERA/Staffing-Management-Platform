@@ -2,7 +2,10 @@ import type { Request, Response } from "express";
 import { UserRole } from "@prisma/client";
 import { prisma } from "../lib/prisma.js";
 import { env } from "../config/env.js";
+import { supabasePublic } from "../lib/supabase.js";
 import { createAuditLog } from "../utils/audit-log.js";
+import { AppError } from "../utils/app-error.js";
+import { forgotPasswordSchema } from "../validators/auth.validator.js";
 
 const resolveRoleFromEmail = (email?: string) => {
   if (!email) {
@@ -60,4 +63,21 @@ export const syncUser = async (req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   return res.json({ data: req.currentUser });
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const payload = forgotPasswordSchema.parse(req.body);
+  const redirectTo = `${env.FRONTEND_URL}/auth/reset-password`;
+
+  const { error } = await supabasePublic.auth.resetPasswordForEmail(payload.email, {
+    redirectTo,
+  });
+
+  if (error) {
+    throw new AppError(error.message, 400);
+  }
+
+  return res.json({
+    message: "If that account exists, a password reset link has been sent.",
+  });
 };

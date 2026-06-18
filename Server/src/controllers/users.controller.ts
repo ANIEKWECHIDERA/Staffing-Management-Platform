@@ -23,7 +23,7 @@ export const createUser = async (req: Request, res: Response) => {
           full_name: payload.fullName,
           app_role: payload.role,
         },
-        redirectTo: `${env.FRONTEND_URL}/login`,
+        redirectTo: `${env.FRONTEND_URL}/auth/accept-invite`,
       })
     : await supabaseAdmin.auth.admin.createUser({
         email: payload.email,
@@ -122,4 +122,43 @@ export const deactivateUser = async (req: Request, res: Response) => {
   });
 
   return res.json({ data: user });
+};
+
+export const resendInvite = async (req: Request, res: Response) => {
+  const userId = String(req.params.id);
+
+  const existingUser = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!existingUser) {
+    throw new AppError("User not found", 404);
+  }
+
+  const authResponse = await supabaseAdmin.auth.admin.inviteUserByEmail(existingUser.email, {
+    data: {
+      full_name: existingUser.fullName,
+      app_role: existingUser.role,
+    },
+    redirectTo: `${env.FRONTEND_URL}/auth/accept-invite`,
+  });
+
+  if (authResponse.error) {
+    throw new AppError(authResponse.error.message, 400);
+  }
+
+  await createAuditLog({
+    userId: req.currentUser!.id,
+    entityType: "user",
+    entityId: existingUser.id,
+    action: "resend_invite",
+    changesJson: {
+      email: existingUser.email,
+      authUserId: existingUser.supabaseUserId,
+    },
+  });
+
+  return res.json({
+    message: "Invite email sent successfully.",
+  });
 };
