@@ -584,6 +584,30 @@ Intended usage pattern:
 3. frontend submits the Cloudinary upload result for verification
 4. domain modules attach the verified asset metadata to records like `WorkerDocument`
 
+### Upload folder structure refinement
+
+Status:
+
+- completed
+
+What changed:
+
+- upload root folder now uses `Skillbridge OS`
+- worker uploads now consistently sit under worker-specific folders inside that root
+- support was added for `staff_credential` uploads
+
+Current folder structure:
+
+- `Skillbridge OS/workers/:workerId/profile`
+- `Skillbridge OS/workers/:workerId/documents`
+- `Skillbridge OS/employers/:employerId/attachments`
+- `Skillbridge OS/staff/:staffId/credentials`
+
+Why:
+
+- this makes it easier to differentiate worker files, employer files, and staff credentials
+- it preserves the LEGO mindset by keeping storage organization centralized in the upload engine rather than scattering folder logic across modules
+
 ## PRD Re-Alignment
 
 ### Task: Re-center backend work on the PRD Phase 1 core system
@@ -677,6 +701,56 @@ Important testing note:
 - current API tests are route-level tests with mocked infrastructure dependencies
 - they verify endpoint shape and backend behavior orchestration
 - they are not yet full live integration tests against the real Supabase database or Cloudinary service
+
+## Live Integration Verification
+
+### Task: Run live integration against the real backend and Supabase project
+
+Status:
+
+- completed
+
+What was verified live:
+
+- server booted successfully with the real `.env`
+- health endpoint responded successfully
+- a real Supabase Auth owner user was created or updated
+- a real Supabase password login returned a valid access token
+- `POST /api/v1/auth/sync-user` created the local app user record
+- `GET /api/v1/auth/me` returned the synced owner user
+- `GET /api/v1/users` worked with real auth
+- `POST /api/v1/users` created a real staff account through Supabase Auth and mirrored it locally
+- `POST /api/v1/employers` created a real employer
+- `POST /api/v1/workers` created a real worker
+- worker document, reference, and guarantor routes worked live
+- worker verification approval worked live
+- `POST /api/v1/job-requests` created a real job request
+- `POST /api/v1/job-requests/:id/matches` returned a live match result
+- `POST /api/v1/placements` created a live placement
+- `GET /api/v1/dashboard/summary` reflected the live data changes
+- `POST /api/v1/uploads/signature` generated a live Cloudinary upload signature payload
+
+Live entities created during verification:
+
+- one owner auth/app user
+- one staff auth/app user
+- one employer
+- one worker
+- one job request
+- one placement
+
+Observed integration issue:
+
+- the first live placement request failed because the submitted `placementDate` string did not match the API’s strict ISO datetime validator
+
+Resolution:
+
+- retried with an explicit UTC ISO format
+- placement creation then succeeded
+
+Outcome:
+
+- the core PRD-aligned backend flow is now verified both in mocked route tests and in a real live integration pass
 
 ## Current Project State
 

@@ -4,6 +4,7 @@ export const uploadTargetSchema = z.enum([
   "worker_profile",
   "worker_document",
   "employer_attachment",
+  "staff_credential",
   "generic",
 ]);
 

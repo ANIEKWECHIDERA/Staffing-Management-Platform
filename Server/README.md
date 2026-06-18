@@ -125,6 +125,21 @@ npm test
 ```
 
 Current test coverage includes a route-level pass across the Phase 1 endpoint surface using mocked infrastructure dependencies.
+
+## Cloudinary Folder Structure
+
+Uploads are organized under the Cloudinary root folder:
+
+- `Skillbridge OS`
+
+Current structure:
+
+- `Skillbridge OS/workers/:workerId/profile`
+- `Skillbridge OS/workers/:workerId/documents`
+- `Skillbridge OS/employers/:employerId/attachments`
+- `Skillbridge OS/staff/:staffId/credentials`
+
+This keeps the upload engine aligned with the LEGO mindset by making media storage predictable and reusable across modules.
 ## Migration Artifact
 
 The initial SQL migration is stored at:

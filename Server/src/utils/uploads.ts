@@ -1,4 +1,9 @@
-type UploadTarget = "worker_profile" | "worker_document" | "employer_attachment" | "generic";
+type UploadTarget =
+  | "worker_profile"
+  | "worker_document"
+  | "employer_attachment"
+  | "staff_credential"
+  | "generic";
 
 type BuildUploadParamsInput = {
   target: UploadTarget;
@@ -18,7 +23,7 @@ const sanitizeSegment = (value: string) =>
     .replace(/^-|-$/g, "");
 
 const buildFolder = (target: UploadTarget, entityId?: string) => {
-  const base = "skillbridge";
+  const base = "Skillbridge OS";
 
   switch (target) {
     case "worker_profile":
@@ -27,6 +32,8 @@ const buildFolder = (target: UploadTarget, entityId?: string) => {
       return entityId ? `${base}/workers/${entityId}/documents` : `${base}/workers/documents`;
     case "employer_attachment":
       return entityId ? `${base}/employers/${entityId}/attachments` : `${base}/employers/attachments`;
+    case "staff_credential":
+      return entityId ? `${base}/staff/${entityId}/credentials` : `${base}/staff/credentials`;
     default:
       return `${base}/misc`;
   }
