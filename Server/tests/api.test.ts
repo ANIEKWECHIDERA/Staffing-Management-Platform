@@ -486,7 +486,12 @@ describe("SkillBridge API endpoints", () => {
     await request(app)
       .post("/api/v1/uploads/signature")
       .set(authHeader())
-      .send({ target: "worker_document", entityId: "worker-1", documentType: "government_id" })
+      .send({
+        target: "worker_document",
+        entityId: "worker-1",
+        documentType: "government_id",
+        fileName: "government-id.pdf",
+      })
       .expect(200);
 
     await request(app)

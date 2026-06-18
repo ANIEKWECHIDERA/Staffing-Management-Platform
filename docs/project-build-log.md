@@ -788,3 +788,147 @@ At minimum, each new entry should capture:
 - why it was changed
 - any architecture or framework decisions
 - what remains unresolved
+
+## 2026-06-18 - Backend Input Hardening And Safer Upload Rules
+
+### What Changed
+
+- Added shared safe input helpers in `Server/src/validators/common.ts`
+- Hardened request validators for:
+  - users
+  - workers
+  - employers
+  - job requests
+  - placements
+  - uploads
+- Switched core validator objects to strict schemas so unknown fields are rejected
+- Added normalization and sanitization for common string inputs:
+  - trims and collapses whitespace
+  - strips control characters
+  - rejects HTML-tag-like content
+  - constrains length
+- Tightened worker identity fields:
+  - `NIN` must be 11 digits
+  - `BVN` must be 11 digits
+- Added safer bounds to numeric and free-text fields
+- Added salary range validation so `salaryMax` cannot be lower than `salaryMin`
+- Restricted upload signing to safe, expected file types only
+
+### Upload Rules Now Enforced
+
+Allowed file types:
+
+- `pdf`
+- `doc`
+- `docx`
+- `xls`
+- `xlsx`
+- `csv`
+- `png`
+- `jpg`
+- `jpeg`
+
+Additional upload restrictions:
+
+- `worker_profile` accepts images only
+- image uploads must be `png`, `jpg`, or `jpeg`
+- raw uploads must be office-safe documents only
+- upload verification now rejects unsupported formats
+- upload verification now enforces a 10MB max payload
+- delete endpoint now only accepts `image` and `raw` resource types
+
+### Why This Was Done
+
+The backend is meant to be the PRD-aligned core engine for other modules. That means the API must be safe and predictable before the frontend starts plugging into it.
+
+This hardening pass reduces common risks such as:
+
+- malformed payloads
+- unexpected fields
+- HTML/script-like input in text fields
+- unsafe or irrelevant upload types
+- inconsistent identity and contact data
+
+### Architecture Notes
+
+- Validation continues to use `zod`
+- Sanitization is centralized through reusable helpers to keep rules consistent across modules
+- Upload restrictions are enforced before Cloudinary signing so the frontend gets clear, early feedback
+- Cloudinary signing now includes `allowed_formats` in the signed payload
+
+### Verification
+
+- `npm run build` passed
+- `npm test` passed
+- `Server/dist` was cleared after verification to follow project rules
+
+### Remaining Follow-Up
+
+- add rate limiting and request-size protections at the Express middleware layer
+- add security headers and CORS tightening for deployment environments
+- run another live integration pass for the full upload round-trip from signed request to Cloudinary callback verification
+
+## 2026-06-18 - Express Middleware Security Layer
+
+### What Changed
+
+- Added centralized security middleware in `Server/src/middleware/security.ts`
+- Tightened CORS to allow only the configured frontend origin
+- Added in-memory rate limiting for:
+  - auth routes
+  - general API routes
+- Reduced request body exposure by setting stricter payload limits
+- Disabled the `X-Powered-By` header
+- Enabled proxy awareness for deployment behind Render or other proxies
+- Tuned security headers with `helmet`
+
+### Middleware Rules Now Active
+
+CORS:
+
+- only the configured `FRONTEND_URL` is allowed as a browser origin
+- credentialed requests remain supported
+- requests with no browser origin header are still allowed for safe server-to-server and local tooling use
+
+Rate limiting:
+
+- `/api/v1/auth/*` is limited to 30 requests per 15 minutes per IP
+- `/api/v1/*` is limited to 300 requests per 15 minutes per IP
+- `/api/v1/health` is excluded from the general limiter
+- limiter response includes `X-RateLimit-*` headers and `Retry-After`
+
+Request size limits:
+
+- JSON bodies limited to `1mb`
+- URL-encoded bodies limited to `250kb`
+- URL-encoded parameter count limited to `50`
+
+Security headers:
+
+- `helmet` remains active
+- `referrerPolicy` is set to `no-referrer`
+- `crossOriginResourcePolicy` is set to `cross-origin`
+- `contentSecurityPolicy` is disabled at the API layer to avoid accidental conflicts since this service is not rendering browser HTML
+
+### Why This Was Done
+
+The API is the PRD-aligned core engine, so we need baseline protection at the transport and middleware layer, not just in validators.
+
+This reduces exposure to:
+
+- abusive request bursts
+- oversized payloads
+- loose browser-origin access
+- accidental framework fingerprinting
+
+### Verification
+
+- `npm run build` passed
+- `npm test` passed
+- `Server/dist` was cleared after verification
+
+### Future Upgrade Path
+
+- move rate limiting to a shared store such as Redis before high-scale production usage
+- split rate limits further by route sensitivity if needed
+- add deployment-specific CORS origin lists if multiple trusted frontend surfaces are introduced

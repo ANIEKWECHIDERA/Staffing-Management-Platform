@@ -32,6 +32,7 @@ export const createUploadSignature = async (req: Request, res: Response) => {
       folder: paramsToSign.folder,
       public_id: paramsToSign.public_id,
       tags: paramsToSign.tags,
+      allowed_formats: paramsToSign.allowed_formats.join(","),
       context: Object.entries(paramsToSign.context)
         .map(([key, value]) => `${key}=${value}`)
         .join("|"),
@@ -64,6 +65,7 @@ export const createUploadSignature = async (req: Request, res: Response) => {
       tags: paramsToSign.tags,
       context: paramsToSign.context,
       resourceType: paramsToSign.resource_type,
+      allowedFormats: paramsToSign.allowed_formats,
     },
   });
 };

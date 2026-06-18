@@ -8,7 +8,7 @@ type UploadTarget =
 type BuildUploadParamsInput = {
   target: UploadTarget;
   entityId?: string;
-  fileName?: string;
+  fileName: string;
   documentType?: string;
   resourceType: "image" | "raw" | "auto";
   actorId: string;
@@ -21,6 +21,34 @@ const sanitizeSegment = (value: string) =>
     .replace(/[^a-z0-9-_]/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
+
+const getFileExtension = (fileName: string) => {
+  const parts = fileName.split(".");
+  return parts.length > 1 ? parts.at(-1)?.toLowerCase() ?? "" : "";
+};
+
+const resolveAllowedFormats = (target: UploadTarget) => {
+  if (target === "worker_profile") {
+    return ["png", "jpg", "jpeg"];
+  }
+
+  return ["pdf", "doc", "docx", "xls", "xlsx", "csv", "png", "jpg", "jpeg"];
+};
+
+const resolveResourceType = (target: UploadTarget, requestedResourceType: "image" | "raw" | "auto", fileName: string) => {
+  const ext = getFileExtension(fileName);
+  const imageFormats = ["png", "jpg", "jpeg"];
+
+  if (target === "worker_profile") {
+    return "image";
+  }
+
+  if (requestedResourceType !== "auto") {
+    return requestedResourceType;
+  }
+
+  return imageFormats.includes(ext) ? "image" : "raw";
+};
 
 const buildFolder = (target: UploadTarget, entityId?: string) => {
   const base = "Skillbridge OS";
@@ -42,11 +70,12 @@ const buildFolder = (target: UploadTarget, entityId?: string) => {
 export const buildSignedUploadParams = (input: BuildUploadParamsInput) => {
   const timestamp = Math.floor(Date.now() / 1000);
   const folder = buildFolder(input.target, input.entityId);
+  const allowedFormats = resolveAllowedFormats(input.target);
   const parts = [
     sanitizeSegment(input.target),
     input.entityId ? sanitizeSegment(input.entityId) : undefined,
     input.documentType ? sanitizeSegment(input.documentType) : undefined,
-    input.fileName ? sanitizeSegment(input.fileName.replace(/\.[^.]+$/, "")) : undefined,
+    sanitizeSegment(input.fileName.replace(/\.[^.]+$/, "")),
     Date.now().toString(),
   ].filter(Boolean);
 
@@ -71,6 +100,7 @@ export const buildSignedUploadParams = (input: BuildUploadParamsInput) => {
     public_id: publicId,
     tags: tags.join(","),
     context,
-    resource_type: input.resourceType,
+    resource_type: resolveResourceType(input.target, input.resourceType, input.fileName),
+    allowed_formats: allowedFormats,
   };
 };

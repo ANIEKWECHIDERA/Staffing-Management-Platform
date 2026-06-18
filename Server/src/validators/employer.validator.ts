@@ -1,14 +1,23 @@
 import { z } from "zod";
+import {
+  optionalSafeEmail,
+  safeFreeText,
+  safeNameString,
+  safePhone,
+  safeTrimmedString,
+} from "./common.js";
 
-export const createEmployerSchema = z.object({
-  name: z.string().min(2),
-  type: z.enum(["household", "business", "organization"]),
-  primaryContactName: z.string().optional(),
-  phone: z.string().min(7),
-  email: z.email().optional(),
-  location: z.string().optional(),
-  address: z.string().optional(),
-  notes: z.string().optional(),
-});
+export const createEmployerSchema = z
+  .object({
+    name: safeNameString(),
+    type: z.enum(["household", "business", "organization"]),
+    primaryContactName: safeNameString().optional(),
+    phone: safePhone,
+    email: optionalSafeEmail,
+    location: safeTrimmedString(2, 120).optional(),
+    address: safeTrimmedString(5, 255).optional(),
+    notes: safeFreeText(1000),
+  })
+  .strict();
 
-export const updateEmployerSchema = createEmployerSchema.partial();
+export const updateEmployerSchema = createEmployerSchema.partial().strict();
