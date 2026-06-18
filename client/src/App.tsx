@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { PublicLayout } from "@/layouts/public-layout";
 import { AboutPage } from "@/pages/public/about-page";
 import { ApplyPage } from "@/pages/public/apply-page";
+import { BlogPage } from "@/pages/public/blog-page";
 import { ContactPage } from "@/pages/public/contact-page";
 import { EmployersPage } from "@/pages/public/employers-page";
 import { HomePage } from "@/pages/public/home-page";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/services" element={<ServicesPage />} />
+        <Route path="/blog" element={<BlogPage />} />
         <Route path="/for-employers" element={<EmployersPage />} />
         <Route path="/for-workers" element={<WorkersPage />} />
         <Route path="/apply" element={<ApplyPage />} />

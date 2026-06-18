@@ -14,6 +14,7 @@ export const companyLinks = [
   { title: "Home", href: "/" },
   { title: "About", href: "/about" },
   { title: "Services", href: "/services" },
+  { title: "Blog", href: "/blog" },
 ] as const;
 
 export const pathwayLinks = [

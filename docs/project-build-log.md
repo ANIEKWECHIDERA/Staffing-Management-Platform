@@ -1137,6 +1137,32 @@ It also creates a better base for the next steps:
 - `npm run lint` passed in `client/`
 - `client/dist` was cleared after verification
 
+## 2026-06-18 - Blog Placeholder Route
+
+### What Changed
+
+- Added a public `/blog` route as a lightweight future reminder
+- Added `Blog` to the public website navigation through `companyLinks`
+- Created a placeholder page explaining that a fuller blog and CMS can be developed later
+
+### Why This Was Done
+
+The blog is not part of the current PRD scope, but adding the route now creates a visible reminder for future expansion without distracting from the core staffing workflows.
+
+This keeps the idea present for a later phase where we may want:
+
+- employer education content
+- worker guidance content
+- trust and verification explainers
+- SEO and brand storytelling
+- CMS-backed editorial workflows
+
+### Verification
+
+- `npm run build` passed in `client/`
+- `npm run lint` passed in `client/`
+- `client/dist` was cleared after verification
+
 ### Notes
 
 - the original static mock was preserved as `docs/pubsite-legacy-reference.html` for reference
