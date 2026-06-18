@@ -1,11 +1,47 @@
+import { useState } from "react";
+import { toast } from "sonner";
 import { PageHero } from "@/components/page-hero";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { contactDetails } from "@/data/site";
+import { sanitizeEmail, sanitizeText } from "@/lib/sanitize";
+import { collectErrors, hasMinLength, isValidEmail } from "@/lib/validation";
 
 export function ContactPage() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const updateField = (field: keyof typeof form, value: string) => {
+    setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const submit = () => {
+    const errors = collectErrors([
+      !hasMinLength(form.name, 2) ? "Your name must be at least 2 characters." : null,
+      !form.email ? "Email address is required." : null,
+      form.email && !isValidEmail(form.email) ? "Enter a valid email address." : null,
+      !hasMinLength(form.subject, 3) ? "Subject must be at least 3 characters." : null,
+      !hasMinLength(form.message, 10) ? "Message must be at least 10 characters." : null,
+    ]);
+
+    if (errors.length > 0) {
+      toast.error("Please fix the contact form.", {
+        description: errors[0],
+      });
+      return;
+    }
+
+    toast.success("Message form looks valid.", {
+      description: "This can be connected to a backend contact endpoint next.",
+    });
+  };
+
   return (
     <div>
       <PageHero
@@ -36,22 +72,41 @@ export function ContactPage() {
             <CardContent className="grid gap-5 sm:grid-cols-2">
               <label className="space-y-2">
                 <span className="text-sm font-medium">Your Name</span>
-                <Input placeholder="Full name" />
+                <Input
+                  value={form.name}
+                  onChange={(event) => updateField("name", sanitizeText(event.target.value, 120))}
+                  placeholder="Full name"
+                  autoComplete="name"
+                />
               </label>
               <label className="space-y-2">
                 <span className="text-sm font-medium">Email Address</span>
-                <Input placeholder="you@example.com" type="email" />
+                <Input
+                  value={form.email}
+                  onChange={(event) => updateField("email", sanitizeEmail(event.target.value))}
+                  placeholder="you@example.com"
+                  type="email"
+                  autoComplete="email"
+                />
               </label>
               <label className="space-y-2 sm:col-span-2">
                 <span className="text-sm font-medium">Subject</span>
-                <Input placeholder="How can we help?" />
+                <Input
+                  value={form.subject}
+                  onChange={(event) => updateField("subject", sanitizeText(event.target.value, 150))}
+                  placeholder="How can we help?"
+                />
               </label>
               <label className="space-y-2 sm:col-span-2">
                 <span className="text-sm font-medium">Message</span>
-                <Textarea placeholder="Tell us what you need." />
+                <Textarea
+                  value={form.message}
+                  onChange={(event) => updateField("message", sanitizeText(event.target.value, 1200))}
+                  placeholder="Tell us what you need."
+                />
               </label>
               <div className="sm:col-span-2">
-                <Button size="lg" type="button">
+                <Button size="lg" type="button" onClick={submit}>
                   Send Message
                 </Button>
               </div>

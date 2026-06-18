@@ -32,8 +32,8 @@ function MenuList({
                 to={item.href}
                 className={({ isActive }) =>
                   cn(
-                    "block rounded-2xl px-3 py-3 text-sm leading-6 transition-colors hover:bg-muted",
-                    isActive && "bg-muted text-secondary",
+                    "group block rounded-2xl border border-transparent px-3 py-3 text-sm leading-6 transition-all hover:border-secondary/25 hover:bg-accent/50 hover:text-secondary active:scale-[0.99]",
+                    isActive && "border-secondary/25 bg-accent/70 text-secondary shadow-[0_14px_28px_-22px_rgba(161,77,49,0.7)]",
                   )
                 }
               >
@@ -125,7 +125,10 @@ export function SiteHeader() {
                     to={item.href}
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
-                      cn("rounded-2xl px-3 py-2 text-sm hover:bg-muted", isActive && "bg-muted text-secondary")
+                      cn(
+                        "rounded-2xl border border-transparent px-3 py-2 text-sm transition-all hover:border-secondary/20 hover:bg-accent/50 hover:text-secondary active:scale-[0.99]",
+                        isActive && "border-secondary/20 bg-accent/70 text-secondary",
+                      )
                     }
                   >
                     {item.title}
@@ -142,7 +145,10 @@ export function SiteHeader() {
                     to={item.href}
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
-                      cn("rounded-2xl px-3 py-2 text-sm hover:bg-muted", isActive && "bg-muted text-secondary")
+                      cn(
+                        "rounded-2xl border border-transparent px-3 py-2 text-sm transition-all hover:border-secondary/20 hover:bg-accent/50 hover:text-secondary active:scale-[0.99]",
+                        isActive && "border-secondary/20 bg-accent/70 text-secondary",
+                      )
                     }
                   >
                     {item.title}

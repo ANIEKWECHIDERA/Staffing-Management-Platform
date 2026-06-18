@@ -1141,3 +1141,68 @@ It also creates a better base for the next steps:
 
 - the original static mock was preserved as `docs/pubsite-legacy-reference.html` for reference
 - the current staff auth pages are frontend placeholders and are not yet connected to Supabase
+
+## 2026-06-18 - Frontend Route Behavior, Validation, And Notifications
+
+### What Changed
+
+- Added automatic scroll restoration so route changes start at the top of the page
+- Added shadcn-style notifications using `sonner`
+- Added reusable frontend sanitization helpers in `client/src/lib/sanitize.ts`
+- Added reusable frontend validation helpers in `client/src/lib/validation.ts`
+- Added `NIN` and `BVN` fields back to the public worker application form
+- Added the shared public header to staff login and staff signup pages
+- Improved hover and active states for submenu items inside the `NavigationMenu`
+
+### Scroll Behavior
+
+Added `client/src/components/scroll-to-top.tsx` and mounted it in `main.tsx`.
+
+Now when users move to a new route:
+
+- the page automatically starts at the top
+- users no longer need to manually scroll back up after navigation
+
+### Notifications
+
+Added `client/src/components/ui/sonner.tsx` and mounted the app-level toaster in `main.tsx`.
+
+Form feedback now uses notification toasts for:
+
+- validation errors
+- valid placeholder submissions
+
+### Sanitization And Validation
+
+Applied controlled input state, sanitization, and validation to:
+
+- public worker application
+- public staffing request
+- public contact form
+- staff login
+- staff signup / access request
+
+Current validations cover:
+
+- required fields
+- minimum text lengths
+- email format
+- phone format
+- `NIN` 11-digit rule
+- `BVN` 11-digit rule
+
+### UI Behavior
+
+Submenu items in the public header now have clearer:
+
+- hover state
+- active state
+- pressed feedback
+
+This makes the navigation feel more intentional and easier to scan.
+
+### Verification
+
+- `npm run build` passed in `client/`
+- `npm run lint` passed in `client/`
+- `client/dist` was cleared after verification
