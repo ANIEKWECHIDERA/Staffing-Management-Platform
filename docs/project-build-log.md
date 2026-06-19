@@ -1232,3 +1232,93 @@ This makes the navigation feel more intentional and easier to scan.
 - `npm run build` passed in `client/`
 - `npm run lint` passed in `client/`
 - `client/dist` was cleared after verification
+
+## 2026-06-18 - Frontend Supabase Auth Wiring And Protected App Shell
+
+### What Changed
+
+- Added frontend Supabase client integration for the React app
+- Added environment-backed frontend config helpers for:
+  - API base URL
+  - Supabase project URL
+  - Supabase anon key
+- Added a shared auth provider in `client/src/contexts/auth-context.tsx`
+- Added a protected route guard in `client/src/components/protected-route.tsx`
+- Connected staff login to real Supabase password auth
+- Added frontend flows for:
+  - forgot password
+  - password reset
+  - invite acceptance
+- Added a protected internal app entry route at `/app`
+- Switched page routing to lazy loading so each public and staff page can load in smaller chunks instead of one large route bundle
+
+### Frontend Auth Behavior
+
+The client now treats Supabase as the identity source and the Express API as the application authorization and profile layer.
+
+Current flow:
+
+1. staff signs in from the frontend with Supabase
+2. the client receives the access session
+3. the client calls backend `sync-user`
+4. the client fetches backend `auth/me`
+5. the internal app uses the synced app user state for access and display
+
+This matches the earlier backend design decision:
+
+- frontend owns session lifecycle
+- backend trusts verified bearer tokens
+- app-specific role data stays in the SkillBridge OS user model
+
+### New Frontend Routes
+
+Public:
+
+- existing routed public website remains intact
+
+Staff auth and internal app:
+
+- `/staff/login`
+- `/staff/signup`
+- `/staff/forgot-password`
+- `/auth/reset-password`
+- `/auth/accept-invite`
+- `/app`
+
+### Why This Was Done
+
+The backend auth surface had already matured enough to support real frontend integration.
+
+This pass closes the gap between:
+
+- backend auth readiness
+- public/staff route separation
+- actual usable sign-in and recovery flows in the React client
+
+It also creates the first protected app shell so the project can now move from marketing-entry experience into authenticated product screens.
+
+### Architecture Notes
+
+- `@supabase/supabase-js` is used in the frontend
+- auth state is centralized through React context
+- Supabase session changes are observed with `onAuthStateChange`
+- password reset completion and invite password setup both finish through `supabase.auth.updateUser(...)`
+- backend profile hydration happens through the existing Express endpoints instead of duplicating authorization state in the client
+- route-level lazy loading was added to reduce page code shipped on first load
+
+### Verification
+
+- `npm run build` passed in `client/`
+- `npm run lint` passed in `client/`
+
+Build note:
+
+- Vite still reports one large shared chunk warning for the main bundle
+- route-level lazy loading improved page splitting, but deeper bundle optimization can still be done later if needed
+
+### Remaining Follow-Up
+
+- connect staff signup or access-request flow to a real backend workflow if the business wants self-serve staff access requests
+- replace the temporary `/app` placeholder with the real internal app shell and dashboard modules from the PRD
+- add authenticated API hooks or a shared data layer for workers, employers, requests, matches, and placements
+- evaluate further bundle splitting for shared UI/runtime code if production performance requires it

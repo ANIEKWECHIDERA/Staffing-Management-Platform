@@ -17,8 +17,9 @@ export function StaffSignupPage() {
     phone: "",
     reason: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = () => {
+  const submit = async () => {
     const errors = collectErrors([
       !hasMinLength(form.fullName, 2) ? "Full name must be at least 2 characters." : null,
       !isRequired(form.email) ? "Work email is required." : null,
@@ -36,9 +37,14 @@ export function StaffSignupPage() {
       return;
     }
 
-    toast.success("Access request form looks valid.", {
-      description: "Connect this action to the real backend workflow next.",
-    });
+    try {
+      setIsSubmitting(true);
+      toast.success("Access request form looks valid.", {
+        description: "Connect this action to the real backend workflow next.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -100,7 +106,7 @@ export function StaffSignupPage() {
                 />
               </label>
               <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row">
-                <Button size="lg" type="button" onClick={submit}>Request Access</Button>
+                <Button size="lg" type="button" onClick={() => void submit()} disabled={isSubmitting}>Request Access</Button>
                 <Button asChild size="lg" variant="outline">
                   <Link to="/staff/login">Back to staff login</Link>
                 </Button>

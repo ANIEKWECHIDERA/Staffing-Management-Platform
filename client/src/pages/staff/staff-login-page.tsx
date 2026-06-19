@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { SiteHeader } from "@/components/site-header";
+import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,10 +10,18 @@ import { sanitizeEmail, sanitizeText } from "@/lib/sanitize";
 import { collectErrors, isRequired, isValidEmail } from "@/lib/validation";
 
 export function StaffLoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { signInWithPassword, appUser, session } = useAuth();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (session && appUser) {
+    return <Navigate to="/app" replace />;
+  }
 
   const submit = () => {
     const errors = collectErrors([
@@ -32,6 +41,36 @@ export function StaffLoginPage() {
     toast.success("Login form looks valid.", {
       description: "Connect this action to Supabase auth on the next pass.",
     });
+  };
+
+  const handleSubmit = async () => {
+    submit();
+    const errors = collectErrors([
+      !isRequired(form.email) ? "Email is required." : null,
+      form.email && !isValidEmail(form.email) ? "Enter a valid email address." : null,
+      !isRequired(form.password) ? "Password is required." : null,
+      form.password && form.password.length < 8 ? "Password must be at least 8 characters." : null,
+    ]);
+
+    if (errors.length > 0) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await signInWithPassword(form.email, form.password);
+      toast.success("Signed in successfully.", {
+        description: "Your session has been synced with SkillBridge OS.",
+      });
+      const target = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? "/app";
+      navigate(target, { replace: true });
+    } catch (error) {
+      toast.error("Could not sign in.", {
+        description: error instanceof Error ? error.message : "Something went wrong.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -85,10 +124,10 @@ export function StaffLoginPage() {
                 </Link>
                 <Link className="text-muted-foreground hover:text-secondary" to="/staff/signup">
                   Need internal access?
-                </Link>
-              </div>
-              <Button className="w-full" size="lg" type="button" onClick={submit}>
-                Log In
+              </Link>
+            </div>
+              <Button className="w-full" size="lg" type="button" onClick={() => void handleSubmit()} disabled={isSubmitting}>
+                {isSubmitting ? "Signing In..." : "Log In"}
               </Button>
             </CardContent>
           </Card>
